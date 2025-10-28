@@ -1,2 +1,84 @@
-# c-invaders
-Projeto acadêmico desenvolvido em C: um jogo 2D em linha de comando inspirado no clássico Space Invaders. Implementa conceitos fundamentais da linguagem C, como structs, ponteiros, alocação dinâmica, listas encadeadas, matrizes e manipulação de arquivos.
+# 🛸 C Invaders
+
+**C Invaders** — jogo 2D em **C** rodando no **terminal** (linha de comando).  
+Inspiração: *Space Invaders*. Projeto acadêmico para demonstrar conceitos de C através de um jogo funcional.
+
+---
+
+## 🎮 Visão geral
+Controle uma nave na base e destrua as ondas de invasores antes que cheguem à sua posição. Jogo renderizado em modo texto usando a biblioteca **cli-lib**.
+
+---
+
+## ✅ Requisitos implementados
+- **Structs** para entidades (player, enemy, projectile, game state).  
+- **Ponteiros** para manipulação de dados e passagem eficiente de estruturas.  
+- **Alocação dinâmica** (malloc/free) para entidades criadas em tempo de execução.  
+- **Listas encadeadas** para gerenciar projéteis e inimigos ativos.  
+- **Matrizes** para representar o campo de jogo.  
+- **Leitura/escrita em arquivo** para salvar top scores (`assets/scores.txt`).  
+
+---
+
+## ⚙️ Requisitos do ambiente
+- Linux ou macOS (WSL/VM no Windows).  
+- GCC (ou compilador compatível).  
+- Biblioteca **cli-lib** disponível (submódulo ou instalada localmente).
+
+---
+
+## 🏗️ Compilação
+No diretório do projeto:
+```bash
+make
+```
+
+(ou `gcc` manual conforme Makefile)
+
+---
+
+## ▶️ Execução
+
+```bash
+./c_invaders
+```
+
+---
+
+## ⌨️ Controles
+
+* `←` / `→` — mover a nave  
+* `Espaço` — atirar  
+* `p` — pausar/retomar  
+* `q` — sair do jogo  
+
+---
+
+## 📈 Sistema de pontuação
+
+* Pontuação acumulada por inimigo destruído.  
+* `assets/scores.txt` mantém os top scores (lido/escrito ao finalizar partida).  
+
+---
+
+## 🔎 Destaques de implementação (breve)
+
+* Lista encadeada para projéteis: adição no fim, remoção ao colidir/fora da tela.  
+* Matriz do mapa usada para detectar colisões e renderizar a tela em buffer.  
+* Módulo de I/O para abstrair leitura do teclado e escrita em arquivo.  
+
+---
+
+## 👨‍💻 Membros
+
+* **Eduardo Henrique**  
+* **Thiago Abrãao**  
+* **Lucas Ramon**  
+
+---
+
+## 📚 Referências
+
+* Biblioteca usada: [https://github.com/tgfb/cli-lib](https://github.com/tgfb/cli-lib)
+
+---
