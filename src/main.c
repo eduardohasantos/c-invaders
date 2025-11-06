@@ -1,10 +1,3 @@
-/**
- * main.h
- * Created on Aug, 23th 2023
- * Author: Tiago Barros
- * Based on "From C to C++ course - 2002"
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,6 +5,8 @@
 #include "keyboard.h"
 #include "timer.h"
 #include "time.h"
+#include "player.h"
+#include "projectile.h"
 
 
 int x = 34, y = 12;
@@ -47,46 +42,76 @@ void printKey(int ch)
     }
 }
 
-int main() 
-{
-    static int ch = 0;
-    static long timer = 0;
-
+int main() {
     screenInit(1);
     keyboardInit();
     timerInit(50);
+    projectileInit();
 
-    printHello(x, y);
-    screenUpdate();
+    Player* player = create_player(10, 20);
 
-    while (ch != 10 && timer <= 100) //enter or 5s
-    {
-        // Handle user input
-        if (keyhit()) 
-        {
-            ch = readch();
-            printKey(ch);
-            screenUpdate();
+    int redraw = 1;
+    /* limites jogáveis (dentro das bordas desenhadas) */
+    const int minX = SCRSTARTX + 1;
+    const int maxX = SCRENDX - 1;
+
+    while (1) {
+        /* redesenhar por timer */
+        if (timerTimeOver()) {
+            /* atualiza projéteis e marca redraw */
+            projectileUpdate();
+            redraw = 1;
         }
 
-        // Update game state (move elements, verify collision, etc)
-        if (timerTimeOver() == 1)
-        {
-            int newX = x + incX;
-            if (newX >= (MAXX -strlen("Hello World") -1) || newX <= MINX+1) incX = -incX;
-            int newY = y + incY;
-            if (newY >= MAXY-1 || newY <= MINY+1) incY = -incY;
+        /* entrada de usuário */
+        if (keyhit()) {
+            int c = readch();
+            if (c == 27) {
+                /* possível sequência de escape (setas) */
+                if (keyhit()) {
+                    int c2 = readch();
+                    if (c2 == '[' && keyhit()) {
+                        int dir = readch();
+                        if (dir == 'C') player->x++; /* right */
+                        else if (dir == 'D') player->x--; /* left */
+                        /* garantir limites */
+                        if (player->x < minX) player->x = minX;
+                        if (player->x > maxX) player->x = maxX;
+                        redraw = 1;
+                    }
+                } else {
+                    /* ESC sozinho -> sair */
+                    break;
+                }
+            } else if (c == 'a' || c == 'A') {
+                player->x--;
+                if (player->x < minX) player->x = minX;
+                redraw = 1;
+            } else if (c == 'd' || c == 'D') {
+                player->x++;
+                if (player->x > maxX) player->x = maxX;
+                redraw = 1;
+            } else if (c == ' ' ) {
+                /* espaço: atira a partir da posição do jogador (acima dele) */
+                projectileSpawn(player->x, player->y - 1);
+                redraw = 1;
+            }
+        }
 
-            printHello(newX, newY);
-
+        if (redraw) {
+            screenClear();
+            screenDrawBorders();
+            projectileDraw();
+            draw_player(player);
             screenUpdate();
-            timer++;
+            redraw = 0;
         }
     }
 
-    keyboardDestroy();
+    projectileDestroy();
     screenDestroy();
+    keyboardDestroy();
     timerDestroy();
-
     return 0;
+
 }

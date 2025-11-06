@@ -1,0 +1,52 @@
+# Executável do jogo
+c_invaders
+c_invaders.exe
+
+# Arquivos objeto, libs e dependências
+*.o
+*.ko
+*.obj
+*.elf
+*.lib
+*.a
+*.la
+*.lo
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Arquivos de debug
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Output de compilação
+src/output/
+output/
+debug/
+Release/
+Debug/
+
+# Arquivos temporários
+*~
+*.swp
+*.swo
+.DS_Store
+*.tmp
+*.temp
+
+# Arquivos de IDE/Editor
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Arquivos específicos do sistema
+Thumbs.db
+.DS_Store
