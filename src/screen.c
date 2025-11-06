@@ -39,7 +39,6 @@ void screenDrawBorders()
     printf("%c", BOX_DWNRIGHT);
 
     screenBoxDisable();
-    
 }
 
 void screenInit(int drawBorders)
@@ -52,7 +51,7 @@ void screenInit(int drawBorders)
 
 void screenDestroy()
 {
-    printf("%s[0;39;49m", ESC); // Reset colors
+    printf("%s[0;39;49m", ESC);
     screenSetNormal();
     screenClear();
     screenHomeCursor();
@@ -67,14 +66,14 @@ void screenGotoxy(int x, int y)
     printf("%s[f%s[%dB%s[%dC", ESC, ESC, y, ESC, x);
 }
 
-void screenSetColor( screenColor fg, screenColor bg)
+void screenSetColor(screenColor fg, screenColor bg)
 {
     char atr[] = "[0;";
 
-    if ( fg > LIGHTGRAY )
+    if (fg > LIGHTGRAY)
     {
         atr[1] = '1';
-		fg -= 8;
+        fg -= 8;
     }
 
     printf("%s%s%d;%dm", ESC, atr, fg+30, bg+40);

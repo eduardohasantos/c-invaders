@@ -1,10 +1,10 @@
 
-void timerInit(int valueMilliSec);
+#ifndef TIMER_H
+#define TIMER_H
 
-void timerDestroy();
+void timerInit(void);
+void timerDestroy(void);
+unsigned int timerGetDelta(void);
+int timerHasElapsed(unsigned int milliseconds);
 
-void timerUpdateTimer(int valueMilliSec);
-
-int timerTimeOver();
-
-void timerPrint();
+#endif

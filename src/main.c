@@ -7,7 +7,7 @@
 #include "time.h"
 #include "player.h"
 #include "projectile.h"
-
+#include "enemy.h"
 
 int x = 34, y = 12;
 int incX = 1, incY = 1;
@@ -45,42 +45,37 @@ void printKey(int ch)
 int main() {
     screenInit(1);
     keyboardInit();
-    timerInit(50);
+    timerInit();
     projectileInit();
+    enemyInit();
 
     Player* player = create_player(10, 20);
 
     int redraw = 1;
-    /* limites jogáveis (dentro das bordas desenhadas) */
     const int minX = SCRSTARTX + 1;
     const int maxX = SCRENDX - 1;
 
     while (1) {
-        /* redesenhar por timer */
-        if (timerTimeOver()) {
-            /* atualiza projéteis e marca redraw */
+        if (timerHasElapsed(50)) {  /* Atualiza a cada 50ms (20 vezes por segundo) */
             projectileUpdate();
+            enemyUpdate();
             redraw = 1;
         }
 
-        /* entrada de usuário */
         if (keyhit()) {
             int c = readch();
             if (c == 27) {
-                /* possível sequência de escape (setas) */
                 if (keyhit()) {
                     int c2 = readch();
                     if (c2 == '[' && keyhit()) {
                         int dir = readch();
-                        if (dir == 'C') player->x++; /* right */
-                        else if (dir == 'D') player->x--; /* left */
-                        /* garantir limites */
+                        if (dir == 'C') player->x++;
+                        else if (dir == 'D') player->x--;
                         if (player->x < minX) player->x = minX;
                         if (player->x > maxX) player->x = maxX;
                         redraw = 1;
                     }
                 } else {
-                    /* ESC sozinho -> sair */
                     break;
                 }
             } else if (c == 'a' || c == 'A') {
@@ -92,15 +87,18 @@ int main() {
                 if (player->x > maxX) player->x = maxX;
                 redraw = 1;
             } else if (c == ' ' ) {
-                /* espaço: atira a partir da posição do jogador (acima dele) */
-                projectileSpawn(player->x, player->y - 1);
-                redraw = 1;
+                if (player_can_shoot()) {
+                    projectileCreate(player->x, player->y - 1);
+                    player_shoot();
+                    redraw = 1;
+                }
             }
         }
 
         if (redraw) {
             screenClear();
             screenDrawBorders();
+            enemyDraw();
             projectileDraw();
             draw_player(player);
             screenUpdate();
@@ -108,6 +106,7 @@ int main() {
         }
     }
 
+    enemyDestroy();
     projectileDestroy();
     screenDestroy();
     keyboardDestroy();

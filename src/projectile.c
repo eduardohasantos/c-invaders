@@ -1,5 +1,6 @@
 #include "projectile.h"
 #include "screen.h"
+#include "enemy.h"
 #include <stdio.h>
 
 #define MAX_PROJECTILES 16
@@ -19,10 +20,9 @@ void projectileInit(void)
 
 void projectileDestroy(void)
 {
-    /* nada a liberar por enquanto */
 }
 
-void projectileSpawn(int x, int y)
+void projectileCreate(int x, int y)
 {
     for (int i = 0; i < MAX_PROJECTILES; ++i)
     {
@@ -34,7 +34,6 @@ void projectileSpawn(int x, int y)
             return;
         }
     }
-    /* se não houver slot livre, ignora o tiro */
 }
 
 void projectileUpdate(void)
@@ -42,8 +41,14 @@ void projectileUpdate(void)
     for (int i = 0; i < MAX_PROJECTILES; ++i)
     {
         if (!bullets[i].active) continue;
-        bullets[i].y -= 1; /* move para cima */
-        /* se chegou ao topo da área jogável, desativa */
+        
+        bullets[i].y -= 1;
+        
+        if (enemyCheckCollision(bullets[i].x, bullets[i].y)) {
+            bullets[i].active = 0;
+            continue;
+        }
+        
         if (bullets[i].y <= SCRSTARTY + 1)
         {
             bullets[i].active = 0;
@@ -53,10 +58,12 @@ void projectileUpdate(void)
 
 void projectileDraw(void)
 {
+    screenSetColor(YELLOW, BLACK);
     for (int i = 0; i < MAX_PROJECTILES; ++i)
     {
         if (!bullets[i].active) continue;
         screenGotoxy(bullets[i].x, bullets[i].y);
         printf("|");
     }
+    screenSetColor(WHITE, BLACK);
 }

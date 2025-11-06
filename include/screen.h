@@ -46,6 +46,8 @@ typedef enum {BLACK, RED, GREEN, BROWN, BLUE, MAGENTA, CYAN, LIGHTGRAY,
         DARKGRAY, LIGHTRED, LIGHTGREEN, YELLOW, LIGHTBLUE, 
         LIGHTMAGENTA, LIGHTCYAN, WHITE} screenColor; 
 
+void screenDrawBorders(void);
+
 static inline void screenHomeCursor()
 {
     printf("%s%s", ESC, HOMECURSOR);
