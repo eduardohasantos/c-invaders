@@ -2,6 +2,7 @@
 #include "screen.h"
 #include "enemy.h"
 #include <stdio.h>
+#include "score.h"
 
 #define MAX_PROJECTILES 16
 
@@ -20,6 +21,7 @@ void projectileInit(void)
 
 void projectileDestroy(void)
 {
+    /* nothing to free for static array */
 }
 
 void projectileCreate(int x, int y)
@@ -43,9 +45,12 @@ void projectileUpdate(void)
         if (!bullets[i].active) continue;
         
         bullets[i].y -= 1;
-        
+
+        /* verificar colisão com inimigo */
         if (enemyCheckCollision(bullets[i].x, bullets[i].y)) {
+            /* marca o projetil como inativo e adiciona pontos */
             bullets[i].active = 0;
+            score_add(10);
             continue;
         }
         

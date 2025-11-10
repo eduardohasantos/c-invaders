@@ -8,6 +8,8 @@
 #include "player.h"
 #include "projectile.h"
 #include "enemy.h"
+#include "score.h"
+
 
 int x = 34, y = 12;
 int incX = 1, incY = 1;
@@ -48,7 +50,7 @@ int main() {
     timerInit();
     projectileInit();
     enemyInit();
-
+    score_init();
     Player* player = create_player(10, 20);
 
     int redraw = 1;
@@ -102,6 +104,7 @@ int main() {
             projectileDraw();
             draw_player(player);
             screenUpdate();
+            score_draw();
             redraw = 0;
         }
     }
