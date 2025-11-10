@@ -57,57 +57,77 @@ int main() {
     const int minX = SCRSTARTX + 1;
     const int maxX = SCRENDX - 1;
 
-    while (1) {
-        if (timerHasElapsed(50)) {  /* Atualiza a cada 50ms (20 vezes por segundo) */
-            projectileUpdate();
-            enemyUpdate();
-            redraw = 1;
-        }
+    int pause = 0;  // 0 = jogando, 1 = pausado
 
+while (1) {
+    if (!pause && timerHasElapsed(50)) {
+        projectileUpdate();
+        enemyUpdate();
+        redraw = 1;
+    }
+
+    if (keyhit()) {
+    int c = readch();
+
+    if (c == 27) {
         if (keyhit()) {
-            int c = readch();
-            if (c == 27) {
-                if (keyhit()) {
-                    int c2 = readch();
-                    if (c2 == '[' && keyhit()) {
-                        int dir = readch();
-                        if (dir == 'C') player->x++;
-                        else if (dir == 'D') player->x--;
-                        if (player->x < minX) player->x = minX;
-                        if (player->x > maxX) player->x = maxX;
-                        redraw = 1;
-                    }
-                } else {
-                    break;
-                }
-            } else if (c == 'a' || c == 'A') {
-                player->x--;
+            int c2 = readch();
+            if (c2 == '[' && keyhit()) {
+                int dir = readch();
+                if (dir == 'C') player->x++;
+                else if (dir == 'D') player->x--;
                 if (player->x < minX) player->x = minX;
-                redraw = 1;
-            } else if (c == 'd' || c == 'D') {
-                player->x++;
                 if (player->x > maxX) player->x = maxX;
                 redraw = 1;
-            } else if (c == ' ' ) {
-                if (player_can_shoot()) {
-                    projectileCreate(player->x, player->y - 1);
-                    player_shoot();
-                    redraw = 1;
-                }
+            }
+        } else {
+            break;
+        }
+    }
+
+        else if (!pause && (c == 'a' || c == 'A')) {
+            player->x--;
+            if (player->x < minX) player->x = minX;
+            redraw = 1;
+        } else if (!pause && (c == 'd' || c == 'D')) {
+            player->x++;
+            if (player->x > maxX) player->x = maxX;
+            redraw = 1;
+        } else if (!pause && c == ' ') {
+            if (player_can_shoot()) {
+                projectileCreate(player->x, player->y - 1);
+                player_shoot();
+                redraw = 1;
             }
         }
 
-        if (redraw) {
-            screenClear();
-            screenDrawBorders();
-            enemyDraw();
-            projectileDraw();
-            draw_player(player);
-            screenUpdate();
-            score_draw();
-            redraw = 0;
+        else if (c == 'p' || c == 'P') {
+            pause = !pause;
+            if (pause) {
+                screenClear();
+                screenDrawBorders();
+                screenGotoxy(30, 10);
+                printf("=== JOGO PAUSADO ===");
+                screenGotoxy(23, 12);
+                printf("=== PRESSIONE P PARA CONTINUAR ===");
+                screenUpdate();
+            } else {
+                redraw = 1;
+            }
         }
     }
+
+    if (redraw) {
+        screenClear();
+        screenDrawBorders();
+        enemyDraw();
+        projectileDraw();
+        draw_player(player);
+        screenUpdate();     
+        score_draw();   
+        redraw = 0;
+    }
+}
 
     enemyDestroy();
     projectileDestroy();
