@@ -24,8 +24,6 @@ int score_get(void) {
     return g_score;
 }
 
-/* Desenha o score imediatamente abaixo da área do jogo (SCRENDY + 1).
-   Chame esta função depois de screenUpdate() para evitar que seja sobrescrita. */
 void score_draw(void) {
     char buf[64];
     int len = snprintf(buf, sizeof(buf), "Score: %d", g_score);
@@ -39,21 +37,13 @@ void score_draw(void) {
         term_cols = (int)w.ws_col;
     }
 
-    int desired_row = SCRENDY + 1; /* linha logo abaixo da área do jogo */
-    int row;
-    if (term_rows > 0) {
-        if (desired_row > 0 && desired_row <= term_rows) row = desired_row;
-        else row = term_rows;
-    } else {
-        row = desired_row > 0 ? desired_row : 1;
-    }
+    int row = 3;
+    int col = 4;
 
-    int width = (term_cols > 0) ? term_cols : len;
-
-    /* salva cursor, move para linha/col 1, escreve e restaura cursor */
+    /* salva cursor, move para linha/col especificadas, escreve e restaura cursor */
     printf("\x1b[s");                    /* save cursor */
-    printf("\x1b[%d;1H", row);           /* move to desired row, col 1 */
-    printf("%-*s", width, buf);          /* write and clear rest of line */
+    printf("\x1b[%d;%dH", row, col);     /* move to row;col */
+    printf("%s", buf);                   /* write */
     printf("\x1b[u");                    /* restore cursor */
     fflush(stdout);
 }
