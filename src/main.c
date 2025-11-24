@@ -9,6 +9,7 @@
 #include "projectile.h"
 #include "enemy.h"
 #include "score.h"
+#include "enemy_projectile.h"
 
 
 int x = 34, y = 12;
@@ -49,6 +50,7 @@ int main() {
     keyboardInit();
     timerInit();
     projectileInit();
+    enemy_projectile_init();
     enemyInit();
     score_init();
     Player* player = create_player(10, 20);
@@ -59,12 +61,13 @@ int main() {
 
     int pause = 0;  // 0 = jogando, 1 = pausado
 
-while (1) {
-    if (!pause && timerHasElapsed(50)) {
-        projectileUpdate();
-        enemyUpdate();
-        redraw = 1;
-    }
+    while (1) {
+        if (!pause && timerHasElapsed(50)) {
+            projectileUpdate();
+            enemyUpdate();
+            enemy_projectile_update();
+            redraw = 1;
+        }
 
     if (keyhit()) {
     int c = readch();
@@ -122,6 +125,7 @@ while (1) {
         screenDrawBorders();
         enemyDraw();
         projectileDraw();
+        enemy_projectile_draw();
         draw_player(player);
         screenUpdate();     
         score_draw();   
@@ -131,6 +135,7 @@ while (1) {
 
     enemyDestroy();
     projectileDestroy();
+    enemy_projectile_destroy();
     screenDestroy();
     keyboardDestroy();
     timerDestroy();

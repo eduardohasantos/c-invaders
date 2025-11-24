@@ -1,5 +1,8 @@
 #include "enemy.h"
 #include "screen.h"
+#include "enemy_projectile.h"
+#include "timer.h"
+#include <stdlib.h>
 #include <stdio.h>
 
 #define ENEMY_ROWS 5
@@ -25,6 +28,14 @@ static double enemySpeed = ENEMY_BASE_SPEED;
 static unsigned int roundWinTime = 0;
 static unsigned int roundWinTimer = 0;
 
+
+// Função auxiliar para encontrar inimigos vivos em uma coluna
+static int get_lowest_alive_in_col(int col) {
+    for (int row = ENEMY_ROWS - 1; row >= 0; row--) {
+        if (enemies[row][col].active) return row;
+    }
+    return -1;
+}
 
 static void respawnEnemies(void)
 {
@@ -60,6 +71,21 @@ void enemyDestroy(void)
 }
 
 void enemyUpdate(void) {
+    // Disparo dos inimigos: a cada ciclo, chance de disparo de um inimigo aleatório
+    static unsigned int lastEnemyShot = 0;
+    extern double enemy_projectile_cooldown;
+    if (!roundWon) {
+        unsigned int now = timerGetDelta();
+        if (now - lastEnemyShot > (unsigned int)enemy_projectile_cooldown) {
+            // Escolhe uma coluna aleatória
+            int col = rand() % ENEMY_COLS;
+            int row = get_lowest_alive_in_col(col);
+            if (row != -1) {
+                enemy_projectile_create(enemies[row][col].x, enemies[row][col].y + 1);
+                lastEnemyShot = now;
+            }
+        }
+    }
     if (roundWon) {
         if (roundWinTime) {
             if (roundWinTimer == 0) {
@@ -68,6 +94,7 @@ void enemyUpdate(void) {
             // Espera 3 segundos (3000 ms) após round ganho
             if (timerGetDelta() - roundWinTimer >= 3000) {
                 enemySpeed *= 1.3; // 30% mais rápido a cada round
+                enemy_projectile_next_round();
                 respawnEnemies();
                 roundWinTime = 0;
                 roundWinTimer = 0;
