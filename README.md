@@ -6,7 +6,7 @@ Inspiração: *Space Invaders*. Projeto acadêmico para demonstrar conceitos de 
 ---
 
 ## 🎮 Visão geral
-Controle uma nave na base e destrua as ondas de invasores antes que cheguem à sua posição. Jogo renderizado em modo texto usando a biblioteca **cli-lib**.
+Controle uma nave na base e destrua as ondas de invasores antes que lhe acertem. Jogo renderizado em modo texto usando a biblioteca **cli-lib**.
 
 ---
 
@@ -27,21 +27,10 @@ Controle uma nave na base e destrua as ondas de invasores antes que cheguem à s
 
 ---
 
-## 🏗️ Compilação
-No diretório do projeto:
-```bash
-make
-```
+## 🏗️ Compilação e Execução
+Abaixo está a documentação ensinando como compilar e rodar o jogo em todas as plataformas.
 
-(ou `gcc` manual conforme Makefile)
-
----
-
-## ▶️ Execução
-
-```bash
-./c_invaders
-```
+[![Abrir no Google Docs](https://img.shields.io/badge/Google%20Docs-Acessar-blue?logo=google-docs&logoColor=white)](https://docs.google.com/document/d/1mG1EGNAmWWgenAhzveU3yGY-b2QAjuM1PTyladAfXYY/edit?usp=sharing)
 
 ---
 
@@ -57,7 +46,7 @@ make
 ## 📈 Sistema de pontuação
 
 * Pontuação acumulada por inimigo destruído.  
-* `assets/scores.txt` mantém os top scores (lido/escrito ao finalizar partida).  
+* `highscores.txt` mantém os top scores (lido/escrito ao finalizar partida).  
 
 ---
 
