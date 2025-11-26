@@ -71,3 +71,5 @@ Abaixo está a documentação ensinando como compilar e rodar o jogo em todas as
 * Biblioteca usada: [https://github.com/tgfb/cli-lib](https://github.com/tgfb/cli-lib)
 
 ---
+## 📷Vídeo do jogo
+https://youtu.be/l-_knaUofXs
