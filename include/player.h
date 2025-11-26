@@ -4,6 +4,7 @@
 typedef struct {
     int x;
     int y;
+    int lives;
     char symbol;
 } Player;
 

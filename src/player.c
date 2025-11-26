@@ -11,6 +11,7 @@ Player* create_player(int x, int y) {
     Player* p = malloc(sizeof(Player));
     p->x = x;
     p->y = y;
+    p->lives = 3;
     p->symbol = 'A';
     return p;
 }

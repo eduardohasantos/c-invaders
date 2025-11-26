@@ -184,3 +184,8 @@ int enemyCheckCollision(int x, int y)
     }
     return 0;
 }
+
+int enemy_get_current_round(void)
+{
+    return roundsCleared + 1;
+}

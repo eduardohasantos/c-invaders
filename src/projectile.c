@@ -47,10 +47,11 @@ void projectileUpdate(void)
         bullets[i].y -= 1;
 
         /* verificar colisão com inimigo */
-        if (enemyCheckCollision(bullets[i].x, bullets[i].y)) {
+        int awarded_points = enemyCheckCollision(bullets[i].x, bullets[i].y);
+        if (awarded_points > 0) {
             /* marca o projetil como inativo e adiciona pontos */
             bullets[i].active = 0;
-            score_add(10);
+            score_add(awarded_points);
             continue;
         }
         
