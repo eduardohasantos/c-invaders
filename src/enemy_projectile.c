@@ -8,7 +8,7 @@
 #define ENEMY_PROJECTILE_CHAR 'o'
 #define ENEMY_PROJECTILE_COLOR GREEN
 #define ENEMY_PROJECTILE_BG BLACK
-#define ENEMY_PROJECTILE_BASE_COOLDOWN 2000
+#define ENEMY_PROJECTILE_BASE_COOLDOWN 1200
 #define ENEMY_PROJECTILE_BASE_SPEED 1
 extern double SHOOT_COOLDOWN;
 
@@ -37,7 +37,7 @@ void enemy_projectile_init(void) {
 }
 
 void enemy_projectile_destroy(void) {
-    // Nada a liberar
+
 }
 
 void enemy_projectile_create(int x, int y) {
@@ -66,12 +66,12 @@ void enemy_projectile_update(void) {
         }
     }
 }
-// Função para ser chamada quando o round aumenta
+
 void enemy_projectile_next_round(void) {
     current_round++;
-    enemy_projectile_cooldown /= 1.3; // aumenta frequência em 30%
+    enemy_projectile_cooldown /= 1.3;
     if (enemy_projectile_cooldown < 200) enemy_projectile_cooldown = 200;
-    // velocidade da bala do inimigo igual à do player
+
     enemy_projectile_speed = ENEMY_PROJECTILE_BASE_SPEED;
     for (int i = 0; i < MAX_ENEMY_PROJECTILES; ++i) {
         enemy_bullets[i].speed = enemy_projectile_speed;

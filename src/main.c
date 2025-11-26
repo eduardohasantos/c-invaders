@@ -9,7 +9,9 @@
 #include "projectile.h"
 #include "enemy.h"
 #include "score.h"
+
 #include "enemy_projectile.h"
+#include "player_animation.h"
 
 typedef enum { STATE_GET_NAME, STATE_PLAYING, STATE_PAUSED, STATE_GAME_OVER } GameState;
 
@@ -65,7 +67,7 @@ int main() {
     GameState state = STATE_GET_NAME;
 
     while (1) {
-        // --- LÓGICA DE ESTADOS DO JOGO ---
+
         if (state == STATE_GET_NAME) {
             if (redraw) {
                 screenClear();
@@ -84,7 +86,7 @@ int main() {
             if (keyhit()) {
                 int c = readch();
                 if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
-                    playerName[nameCharIndex] = (c >= 'a') ? c - 32 : c; // Converte para maiúscula
+                    playerName[nameCharIndex] = (c >= 'a') ? c - 32 : c;
                     nameCharIndex++;
                     redraw = 1;
                 }
@@ -93,7 +95,7 @@ int main() {
                     redraw = 1;
                 }
             }
-            continue; // Pula o resto do loop
+            continue;
         }
         else if (state == STATE_PLAYING && timerHasElapsed(50)) {
             projectileUpdate();
@@ -101,8 +103,9 @@ int main() {
             enemy_projectile_update();
             redraw = 1;
 
-            // Verifica colisão do projétil inimigo com o jogador e se o jogador ainda tem vidas
+
             if (enemy_projectile_check_collision(player->x, player->y)) {
+                player_hit_animation(player);
                 player->lives--;
                 if (player->lives <= 0) {
                     highscore_check_and_add(playerName, score_get(), enemy_get_current_round());
@@ -116,9 +119,9 @@ int main() {
 
     if (state == STATE_GAME_OVER) {
         if (c == 'q' || c == 'Q' || c == 27) {
-            break; // Sair do jogo
+            break;
         } else if (c == 'r' || c == 'R') {
-            // Reiniciar o jogo
+
             enemyInit();
             projectileInit();
             enemy_projectile_init();
@@ -129,21 +132,11 @@ int main() {
             state = STATE_PLAYING;
             redraw = 1;
         }
-        continue; // Ignora outras teclas
+        continue;
     }
 
     if (c == 27) {
-        if (keyhit()) {
-            int c2 = readch();
-            if (c2 == '[' && keyhit()) {
-                int dir = readch();
-                if (dir == 'C') player->x++;
-                else if (dir == 'D') player->x--;
-                if (player->x < minX) player->x = minX;
-                if (player->x > maxX) player->x = maxX;
-                redraw = 1;
-            }
-        }
+        break;
     } else if (state == STATE_PLAYING && (c == 'a' || c == 'A')) {
             player->x--;
             if (player->x < minX) player->x = minX;
@@ -175,9 +168,9 @@ int main() {
                 redraw = 1;
             }
         }
-        // Adiciona a funcionalidade de "Novo Jogo" com a tecla 'N'
+
         else if (c == 'r' || c == 'R') {
-            // Reinicia completamente o jogo para a tela de nome
+
             enemyInit();
             projectileInit();
             enemy_projectile_init();
@@ -185,7 +178,7 @@ int main() {
             player->x = 10;
             player->y = 20;
             player->lives = 3;
-            nameCharIndex = 0; // Reseta o índice para inserção do nome
+            nameCharIndex = 0;
             state = STATE_GET_NAME;
             redraw = 1;
         }
@@ -198,17 +191,22 @@ int main() {
             projectileDraw();
             enemy_projectile_draw();
             draw_player(player);
-            score_draw(); // Desenha a pontuação
-            
-            // Desenha as vidas do jogador
+
+
+            score_draw();
+
+
             screenSetColor(WHITE, BLACK);
             screenGotoxy(MAXX - 15, 2);
             printf("Vidas: %d", player->lives);
 
-            // Desenha a ronda atual
+
+            char rodada_text[32];
+            snprintf(rodada_text, sizeof(rodada_text), "Rodada: %d", enemy_get_current_round());
+            int rodada_col = (MAXX / 2) - (strlen(rodada_text) / 2);
             screenSetColor(WHITE, BLACK);
-            screenGotoxy(38, 2);
-            printf("Rodada: %d", enemy_get_current_round());
+            screenGotoxy(rodada_col, 2);
+            printf("%s", rodada_text);
 
             screenUpdate();
             redraw = 0;
@@ -219,13 +217,13 @@ int main() {
         screenGotoxy(32, 5);
         printf("=== GAME OVER ===");
         
-        // Mostra a pontuação final de forma destacada
+
         char final_score_text[32];
         snprintf(final_score_text, sizeof(final_score_text), "SUA PONTUACAO: %d", score_get());
         screenGotoxy(40 - (strlen(final_score_text) / 2), 8);
         printf("%s", final_score_text);
 
-        highscore_draw(11); // Desenha os recordes a partir da linha 11
+        highscore_draw(11);
         screenGotoxy(25, 20);
         printf("Pressione 'R' para reiniciar ou 'Q' para sair");
         screenUpdate();

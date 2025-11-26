@@ -1,4 +1,4 @@
-// Permite acesso externo ao cooldown dinâmico
+
 extern double enemy_projectile_cooldown;
 #ifndef ENEMY_PROJECTILE_H
 #define ENEMY_PROJECTILE_H

@@ -10,7 +10,9 @@
 #define ENEMY_SPACING_X 1
 #define ENEMY_SPACING_Y 1
 #define ENEMY_CHAR 'M'
-#define ENEMY_BASE_SPEED 2
+#define ENEMY_BASE_SPEED 1.5
+#define ENEMY_SPEED_GROWTH 1.20
+#define ENEMY_RANDOM_TURN_CHANCE 0.10
 
 typedef struct {
     int x, y;
@@ -29,7 +31,7 @@ static unsigned int roundWinTime = 0;
 static unsigned int roundWinTimer = 0;
 
 
-// Função auxiliar para encontrar inimigos vivos em uma coluna
+
 static int get_lowest_alive_in_col(int col) {
     for (int row = ENEMY_ROWS - 1; row >= 0; row--) {
         if (enemies[row][col].active) return row;
@@ -71,19 +73,25 @@ void enemyDestroy(void)
 }
 
 void enemyUpdate(void) {
-    // Disparo dos inimigos: a cada ciclo, chance de disparo de um inimigo aleatório
+
     static unsigned int lastEnemyShot = 0;
     extern double enemy_projectile_cooldown;
     if (!roundWon) {
         unsigned int now = timerGetDelta();
         if (now - lastEnemyShot > (unsigned int)enemy_projectile_cooldown) {
-            // Escolhe uma coluna aleatória
-            int col = rand() % ENEMY_COLS;
-            int row = get_lowest_alive_in_col(col);
-            if (row != -1) {
-                enemy_projectile_create(enemies[row][col].x, enemies[row][col].y + 1);
-                lastEnemyShot = now;
+            int shots = 1;
+            extern int roundsCleared;
+            if (roundsCleared > 0) {
+                shots = 1 + (rand() % 2);
             }
+            for (int s = 0; s < shots; s++) {
+                int col = rand() % ENEMY_COLS;
+                int row = get_lowest_alive_in_col(col);
+                if (row != -1) {
+                    enemy_projectile_create(enemies[row][col].x, enemies[row][col].y + 1);
+                }
+            }
+            lastEnemyShot = now;
         }
     }
     if (roundWon) {
@@ -91,9 +99,9 @@ void enemyUpdate(void) {
             if (roundWinTimer == 0) {
                 roundWinTimer = timerGetDelta();
             }
-            // Espera 3 segundos (3000 ms) após round ganho
+
             if (timerGetDelta() - roundWinTimer >= 3000) {
-                enemySpeed *= 1.3; // 30% mais rápido a cada round
+                enemySpeed *= ENEMY_SPEED_GROWTH;
                 enemy_projectile_next_round();
                 respawnEnemies();
                 roundWinTime = 0;
@@ -104,12 +112,16 @@ void enemyUpdate(void) {
     }
 
     updateCounter++;
-    int updateThreshold = (int)(15 / enemySpeed);
+    int updateThreshold = (int)(12 / enemySpeed);
     if (updateThreshold < 1) updateThreshold = 1;
     if (updateCounter < updateThreshold) return;
     updateCounter = 0;
 
     int needsFlip = 0;
+
+    if ((rand() / (double)RAND_MAX) < ENEMY_RANDOM_TURN_CHANCE) {
+        moveDirection *= -1;
+    }
     for (int row = 0; row < ENEMY_ROWS; row++) {
         for (int col = 0; col < ENEMY_COLS; col++) {
             if (!enemies[row][col].active) continue;
@@ -121,11 +133,9 @@ void enemyUpdate(void) {
         }
         if (needsFlip) break;
     }
-
     if (needsFlip) {
         moveDirection *= -1;
     }
-
     for (int row = 0; row < ENEMY_ROWS; row++) {
         for (int col = 0; col < ENEMY_COLS; col++) {
             if (!enemies[row][col].active) continue;
@@ -174,8 +184,8 @@ int enemyCheckCollision(int x, int y)
                     roundsCleared++;
                     enemyValue += 5;
                     roundWon = 1;
-                    roundWinTime = 1; // Marca que o round foi ganho
-                    // O respawn será feito no enemyUpdate após 3s
+                    roundWinTime = 1;
+
                 }
 
                 return awarded;

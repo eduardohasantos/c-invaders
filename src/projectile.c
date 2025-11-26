@@ -21,7 +21,6 @@ void projectileInit(void)
 
 void projectileDestroy(void)
 {
-    /* nothing to free for static array */
 }
 
 void projectileCreate(int x, int y)
@@ -46,10 +45,10 @@ void projectileUpdate(void)
         
         bullets[i].y -= 1;
 
-        /* verificar colisão com inimigo */
+        
         int awarded_points = enemyCheckCollision(bullets[i].x, bullets[i].y);
         if (awarded_points > 0) {
-            /* marca o projetil como inativo e adiciona pontos */
+            
             bullets[i].active = 0;
             score_add(awarded_points);
             continue;
