@@ -61,7 +61,7 @@ Abaixo está a documentação ensinando como compilar e rodar o jogo em todas as
 ## 👨‍💻 Membros
 
 * **Eduardo Henrique**  
-* **Thiago Abrãao**  
+* **Tiago Abrãao**  
 * **Lucas Ramon**  
 
 ---
